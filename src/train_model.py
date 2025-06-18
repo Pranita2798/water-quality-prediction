@@ -1,40 +1,32 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
-from sklearn.impute import SimpleImputer
-import matplotlib.pyplot as plt
-import seaborn as sns
+import pickle
 
-# Load dataset
-df = pd.read_csv("data/water.csv")
+# Load data
+df = pd.read_csv('data/water_quality.csv')
 
-# Split features and target
-X = df.drop('Potability', axis=1)
-y = df['Potability']
+# Features and target
+features = ['ph', 'do', 'turbidity']  # Update as per your dataset
+target = 'wqi_class'
 
-# Handle missing values
-imputer = SimpleImputer(strategy='mean')
-X_imputed = imputer.fit_transform(X)
+X = df[features]
+y = df[target]
 
-# Train/test split
-X_train, X_test, y_train, y_test = train_test_split(X_imputed, y, test_size=0.3, random_state=42)
+# Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train Random Forest model
-model = RandomForestClassifier(random_state=42)
+# Model
+model = RandomForestClassifier()
 model.fit(X_train, y_train)
 
-# Predictions
-y_pred = model.predict(X_test)
+# Save model
+with open('models/model.pkl', 'wb') as f:
+    pickle.dump(model, f)
 
-# Evaluate
-print("✅ Accuracy:", accuracy_score(y_test, y_pred))
-print("📊 Classification Report:\n", classification_report(y_test, y_pred))
-
-# Confusion matrix
-cm = confusion_matrix(y_test, y_pred)
-sns.heatmap(cm, annot=True, cmap="Blues", fmt='d')
-plt.title("Confusion Matrix")
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.show()
+# Feature Importance
+importances = model.feature_importances_
+print("✅ Model trained and saved to 'models/model.pkl'")
+print("\n🔍 Feature Importances:")
+for feature, score in zip(features, importances):
+    print(f"{feature}: {score:.4f}")
