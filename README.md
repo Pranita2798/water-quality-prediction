@@ -1,5 +1,5 @@
 # water-quality-prediction
-This project uses machine learning to predict whether water is potable (safe to drink) based on physicochemical properties.
+ML classification of water potability from physicochemical data. Random Forest and Logistic Regression in scikit-learn, feature selection, and model tuning to 85% accuracy. Full cycle from EDA to a deployment-ready evaluation. Jupyter/Python.
 
 # 💧 Water Quality Prediction
 
